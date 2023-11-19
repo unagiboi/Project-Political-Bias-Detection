@@ -67,6 +67,8 @@ def preprocess_dataset(json_files_directory):
         with open(os.path.join(json_files_directory, filename), 'r', encoding='utf-8') as file:
             json_data = json.load(file)
 
+        bias = json_data.get('bias', None)
+
         # Apply text processing to the 'content_original' field
         content_original = json_data.get('content_original', '')
         tokens = clean_and_tokenize(content_original)
@@ -79,7 +81,8 @@ def preprocess_dataset(json_files_directory):
             'original_tokens': tokens,
             'filtered_tokens': filtered_tokens,
             'stemmed_tokens': stemmed_tokens,
-            'lemmatized_tokens': lemmatized_tokens
+            'lemmatized_tokens': lemmatized_tokens,
+            'bias': bias
         }
 
         # Append the dictionary to the list

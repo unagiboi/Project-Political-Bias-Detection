@@ -10,7 +10,7 @@ from models.bert import fine_tune_bert
 
 
 # CURRENTLY TESTING W ONE FILE
-json_files_directory = 'Article-Bias-Prediction/data/testing'
+json_files_directory = 'testing'
 
 
 if __name__ == "__main__":
