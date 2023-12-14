@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset, random_split
 from torch.nn.utils.rnn import pad_sequence
 from torch.optim import Adam
-from transformers import BertTokenizer, BertForSequenceClassification, AdamW
+from transformers import RobertaForSequenceClassification, RobertaTokenizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
@@ -49,10 +49,11 @@ class EarlyStopping:
     def save_checkpoint(self, val_loss, model):
         torch.save(model.state_dict(), self.path)
 
+from gensim.models import Word2Vec
 
 # Method to tokenize and preprocess the input text
 def tokenize_data(texts, labels, max_length=128):
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+    tokenizer = RobertaTokenizer.from_pretrained('roberta-base', do_lower_case=True)
     
     # Tokenize input texts and pad sequences
     input_ids = []
@@ -73,12 +74,16 @@ def tokenize_data(texts, labels, max_length=128):
     # Find the maximum length within the batch
     max_len = max(len(ids[0]) for ids in input_ids)
 
+    input_ids = torch.stack(input_ids, dim=0)
+    attention_masks = torch.stack(attention_masks, dim=0)
 
-    input_ids = pad_sequence(input_ids, batch_first=True, padding_value=0)
-    attention_masks = pad_sequence(attention_masks, batch_first=True, padding_value=0)
     labels = torch.tensor(labels, dtype=torch.long)
 
-    return input_ids, attention_masks, labels
+    input_ids = input_ids.to(device)
+    attention_masks = attention_masks.to(device)
+    labels = labels.to(device)
+    dataset = TensorDataset(input_ids, attention_masks, labels)
+    return dataset
 
 # Method to split the dataset into training and validation sets
 def split_data(input_ids, attention_masks, labels, validation_split=0.2, test_split=0.1):
@@ -136,8 +141,7 @@ def train_model(model, train_dataloader, val_dataloader, epochs=10, lr=2e-5, wei
             print("Early stopping")
             break
 
-    torch.save(model.state_dict(), 'bert_model_state_dict.pth')
-    scheduler.step()
+        scheduler.step()
 
 
 # Method to evaluate the BERT model
@@ -158,9 +162,11 @@ def evaluate_model(model, dataloader):
 
             outputs = model(inputs, attention_mask=attention_mask, labels=labels)
             logits = outputs['logits']
+            # loss = outputs.loss
             loss = torch.nn.CrossEntropyLoss()(logits, labels)
             total_loss += loss.item()
 
+            # logits = outputs
             preds = torch.argmax(logits, dim=1).cpu().numpy()
             all_preds.extend(preds)
             all_labels.extend(labels.cpu().numpy())
@@ -169,3 +175,31 @@ def evaluate_model(model, dataloader):
     accuracy = accuracy_score(all_labels, all_preds)
 
     return avg_loss, accuracy
+
+def test_model(model, dataloader):
+    model.eval()
+    total_loss = 0.0
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for batch in dataloader:
+
+            inputs, attention_mask, labels = batch
+
+            inputs = inputs.squeeze(1).to(device)
+            attention_mask = attention_mask.squeeze(1).to(device)
+            labels = labels.to(device)
+
+            outputs = model(inputs, attention_mask=attention_mask, labels=labels)
+            logits = outputs['logits']
+            # loss = outputs.loss
+            loss = torch.nn.CrossEntropyLoss()(logits, labels)
+            total_loss += loss.item()
+
+            # logits = outputs
+            preds = torch.argmax(logits, dim=1).cpu().numpy()
+            all_preds.extend(preds)
+            all_labels.extend(labels.cpu().numpy())
+
+    return all_preds, all_labels

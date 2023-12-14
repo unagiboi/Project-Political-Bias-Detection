@@ -17,9 +17,10 @@ except AttributeError:
 else:
     ssl._create_default_https_context = _create_unverified_https_context
 
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('wordnet')
+# nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('omw-1.4')
 
 def clean_and_tokenize(text):
     # Remove HTML tags, URLs, and special characters
@@ -58,7 +59,6 @@ def load_dataset(jsons_path):
 
 
 def preprocess_dataset(json_files_directory):
-    
     processed_data_list = []
 
     # Iterate through each JSON file in the directory
@@ -66,12 +66,14 @@ def preprocess_dataset(json_files_directory):
         # Load JSON data from the file
         with open(os.path.join(json_files_directory, filename), 'r', encoding='utf-8') as file:
             json_data = json.load(file)
-
+        
         bias = json_data.get('bias', None)
 
         # Apply text processing to the 'content_original' field
         content_original = json_data.get('content_original', '')
         tokens = clean_and_tokenize(content_original)
+        # if (len(tokens) > 512):
+        #     continue
         filtered_tokens = remove_stopwords(tokens)
         stemmed_tokens = apply_stemming(filtered_tokens)
         lemmatized_tokens = apply_lemmatization(filtered_tokens)
@@ -90,41 +92,3 @@ def preprocess_dataset(json_files_directory):
 
     processed_data = pd.DataFrame(processed_data_list)
     return processed_data
-
-# import json
-# import os
-
-# # Function definitions from the previous code snippet
-
-# # Specify the directory where your JSON files are located
-# # Specify the directory where you want to save the processed JSON files
-# output_directory = '/Article-Bias-Prediction/data/processed_json'
-
-# # Iterate through each JSON file in the directory
-# for filename in os.listdir(json_files_directory):
-#     # Load JSON data from the file
-#     with open(os.path.join(json_files_directory, filename), 'r', encoding='utf-8') as file:
-#         json_data = json.load(file)
-
-#     # Apply text processing to the 'content_original' field
-#     content_original = json_data.get('content_original', '')
-#     tokens = clean_and_tokenize(content_original)
-#     filtered_tokens = remove_stopwords(tokens)
-#     stemmed_tokens = apply_stemming(filtered_tokens)
-#     lemmatized_tokens = apply_lemmatization(filtered_tokens)
-
-#     # Update the JSON data with the processed tokens
-#     json_data['processed_tokens'] = {
-#         'original_tokens': tokens,
-#         'filtered_tokens': filtered_tokens,
-#         'stemmed_tokens': stemmed_tokens,
-#         'lemmatized_tokens': lemmatized_tokens
-#     }
-
-#     # Save the processed JSON data to a new file in the output directory
-#     output_filename = f"processed_{filename}"
-#     output_path = os.path.join(output_directory, output_filename)
-#     with open(output_path, 'w', encoding='utf-8') as output_file:
-#         json.dump(json_data, output_file, ensure_ascii=False, indent=2)
-
-#     print(f"Processed and saved: {output_path}")
