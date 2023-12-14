@@ -73,7 +73,6 @@ To address the limitations of the initial dataset, we made significant adjustmen
    - Accuracy achieved: 0.843
 
 4. **T5 Summarization Model Integration:**
-   - [Details of T5 summarization model integration.]
 
 ### Model Adaptability and Real-World Application
 - **Summarization Technique:**
@@ -85,8 +84,8 @@ To address the limitations of the initial dataset, we made significant adjustmen
 
 
 ## Results and Discussion
-The achieved test accuracy of 0.84 marked a significant milestone in the project. Despite extensive experimentation with different model configurations, statistical significance in accuracy improvement proved elusive. [Additional discussion on results.]
+The achieved test accuracy of 0.84 marked a significant milestone in the project. Despite extensive experimentation with different model configurations, statistical significance in accuracy improvement proved elusive. 
 
 ## Conclusion and Future Directions
-In conclusion, the project successfully addressed the core objective of political bias detection in media. The integration of advanced models, hyperparameter tuning, and real-world adaptability measures significantly improved the model's performance. [Future directions and potential improvements.]
+In conclusion, the project successfully addressed the core objective of political bias detection in media. The integration of advanced models, hyperparameter tuning, and real-world adaptability measures significantly improved the model's performance. 
 
