@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Political Bias Detector</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #container {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      width: 300px;
+    }
+
+    #searchBar {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    #result {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #accuracy {
+      color: #555;
+    }
+
+    #submitBtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    #submitBtn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Political Bias Detector</h1>
+    <input type="text" id="searchBar" placeholder="Enter an article...">
+    <button id="submitBtn" onclick="detectBias()">Detect Bias</button>
+    <div id="result"></div>
+    <div id="accuracy"></div>
+  </div>
+
+  <script>
+    function detectBias() {
+      var article = document.getElementById('searchBar').value;
+  
+      // Make an AJAX request to your Flask server
+      fetch('http://127.0.0.1:8000/detect_bias', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'article': article,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Response data:", data);
+        // Update the result and accuracy elements on your webpage
+        document.getElementById('result').innerText = "Bias: " + data.bias;
+        document.getElementById('accuracy').innerText = "Confidence Score: " + data.confidence;
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>
