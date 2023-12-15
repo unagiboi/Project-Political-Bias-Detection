@@ -73,6 +73,7 @@ To address the limitations of the initial dataset, we made significant adjustmen
    - Accuracy achieved: 0.843
 
 4. **T5 Summarization Model Integration:**
+   - Accuracy achieved: 0.414
 
 ### Model Adaptability and Real-World Application
 - **Summarization Technique:**
