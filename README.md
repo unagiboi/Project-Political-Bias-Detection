@@ -32,7 +32,7 @@ Public perception is heavily influenced by the media, and understanding the poli
 ## Methodology
 
 ### Dataset
-Our dataset comes from [source], meticulously curated from allsides.com, encompassing a total of 37,554 texts categorized into three distinct political leanings: left, center, and right.
+Our dataset comes from allsides.com, encompassing a total of 37,554 texts categorized into three distinct political leanings: left, center, and right.
 
 ### Preprocessing
 The dataset underwent a thorough cleaning process involving multiple steps. This involved removing HTML tags and URLs to eliminate noise. Text standardization steps included removing punctuation, converting text to lowercase, and eliminating stopwords. Vocabulary reduction techniques, such as stemming and lemmatization, were applied to further refine the text.
